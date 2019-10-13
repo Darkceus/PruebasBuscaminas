@@ -53,6 +53,21 @@ public class TableroJuego extends JPanel {
     //private final boolean imagenes;
     private final PrintWriter out;
     private final int ADMIN;
+    
+    public TableroJuego(){
+        this.texto = null;
+        this.tiempo = null;
+        this.out = null;
+        this.FILAS = 0;
+        this.COLUMNAS = 0;
+        this.TAM_ALTO = 0;
+        this.TAM_ANCHO = 0;
+        this.NUMERO_MINAS = 0;
+        this.NUM_JUGADOR = 0;
+        this.ADMIN = 0;
+        this.BOTONES = null;
+        this.IMAGENES = null;
+    }
 
     public TableroJuego(JLabel texto, JLabel tiempo, PrintWriter out, int filas, int columnas, int AltoCampo, int AnchoCampo, int NumMinas, int NumJugador, int NumAdmin) {
         this.FILAS = filas;
@@ -71,7 +86,7 @@ public class TableroJuego extends JPanel {
         this.setLayout(new GridLayout(FILAS, COLUMNAS));
         this.IMAGENES = new ImageIcon[NUM_IMAGENES];
         cargarImagenes();
-        BOTONES = new JButton[FILAS][COLUMNAS];
+        this.BOTONES = new JButton[FILAS][COLUMNAS];
         crearBotones();
         inicio = true;
         inicio2 = false;

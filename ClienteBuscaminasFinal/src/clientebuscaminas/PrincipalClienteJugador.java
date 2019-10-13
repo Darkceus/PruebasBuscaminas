@@ -54,6 +54,7 @@ public class PrincipalClienteJugador extends JFrame {
         frame.getContentPane().add(textField, BorderLayout.SOUTH);
         frame.getContentPane().add(new JScrollPane(messageArea), BorderLayout.CENTER);
         frame.pack();
+        juego = new TableroJuego();
         textField.addActionListener((ActionEvent e) -> {
             out.println(textField.getText());
             textField.setText("");
@@ -195,12 +196,14 @@ public class PrincipalClienteJugador extends JFrame {
                 }
             }
         } finally {
-            juego.setVisible(false);
+            System.exit(0);
+            /*juego.setVisible(false);
             juego.cerrarJuego();
             frame.setVisible(false);
             frame.dispose();
             setVisible(false);
-            dispose();
+            dispose();*/
+            //System.exit(0);
         }
     }
     
