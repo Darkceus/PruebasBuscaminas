@@ -1,6 +1,7 @@
 package servidorbuscaminas;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  *
@@ -10,18 +11,43 @@ public class Jugador {
 
     public final static boolean ESTADO_JUGANDO = true;
     public final static boolean ESTADO_ESPECTADOR = false;
+    private ArrayList<Campo> listaBanderas;
     private int id;
     private boolean estado;
+    private boolean clic;
     private Sala sala;
     private String nombre;
     private PrintWriter pw;
     private int puntos;
+    
 
     public Jugador(String nombre, PrintWriter pw) {
         this.nombre = nombre;
         this.pw = pw;
         this.estado = Jugador.ESTADO_JUGANDO;
+        this.clic = false;
         this.puntos = 0;
+        listaBanderas = new ArrayList<>();
+    }
+    
+    public boolean sinBanderas(){
+        return this.listaBanderas.isEmpty();
+    }
+    
+    public boolean agregarBandera(Campo campo){
+        return this.listaBanderas.add(campo);
+    }
+    
+    public boolean quitarBandera(Campo campo) {
+        return this.listaBanderas.remove(campo);
+    }
+    
+    public void quitarBanderas(){
+        this.listaBanderas.forEach((campo) -> {
+            campo.setEstado(Campo.ESTADO_INICIAL);
+            campo.quitarAdmin();
+            sala.enviarInfo("QUITARBANDERA " + campo.getX() + "," + campo.getY() + "," + this.getID());
+        });
     }
 
     public void setSala(Sala sala) {
@@ -42,6 +68,18 @@ public class Jugador {
     
     public int getPuntos(){
         return this.puntos;
+    }
+    
+    public void reiniciarClic(){
+        this.clic = false;
+    }
+    
+    public boolean checarClic(){
+        return this.clic;
+    }
+    
+    public void darClic(){
+        this.clic = true;
     }
 
     public void setID(int id) {

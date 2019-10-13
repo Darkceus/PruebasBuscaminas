@@ -66,5 +66,7 @@ public class Campo {
         this.Admin = Admin;
     }
     
-    
+    public void quitarAdmin(){
+        this.Admin = null;
+    }
 }

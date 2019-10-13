@@ -11,10 +11,10 @@ public class Sala {
     private int id;
     private Jugador Admin;
     private final ArrayList<Jugador> listaJugadores;
+    private final ArrayList<Jugador> listaPerdedores;
     private boolean disponible;
     private boolean iniciado;
     private Juego juego;
-    private final ArrayList<Jugador> listaPerdedores;
 
     public Sala(int id, Jugador jugador) {
         this.id = id;
@@ -118,22 +118,55 @@ public class Sala {
         if(this.Admin == jugador){
             this.Admin = null;
         }
-        return this.listaJugadores.remove(jugador);
+        boolean eliminado = this.listaJugadores.remove(jugador);
+        corregirNumeros();
+        return eliminado;
+    }
+    
+    private void corregirNumeros(){
+        int i = 0;
+        for(Jugador jugador : this.listaJugadores){
+            i++;
+            jugador.setID(i);
+        }
+    }
+    
+    private boolean checarTam(){
+        return this.getTam() < 4;
     }
 
     public boolean checarDisponibilidad() {
-        return (disponible = (this.getTam() < 4)) && !iniciado;
+        return (disponible = checarTam()) && !iniciado;
+    }
+    
+    public void reiniciarJugadores() {
+        this.listaJugadores.forEach((jugador) -> {
+            jugador.reiniciarClic();
+            jugador.setEstado(Jugador.ESTADO_JUGANDO);
+        });
+    }
+    
+    public void reiniciarDatos() {
+        if (iniciado) {
+            this.iniciado = false;
+            if (checarTam()) {
+                this.disponible = true;
+            }
+            reiniciarJugadores();
+        }
     }
 
     public void iniciarJuego(Jugador jugador) {
-        if (getTam() > 1 && !iniciado && disponible && this.Admin.equals(jugador)) {
+        if (getTam() > 1 && !iniciado && this.Admin.equals(jugador)) {
+            reiniciarJugadores();
             juego = new Juego(this);
             this.iniciado = true;
             this.disponible = false;
+            this.enviarInfo("MESSAGE El juego ha iniciado");
             this.enviarDatosJuego();
         }
-        if(!this.Admin.equals(jugador)){
-            jugador.getPW().println("INFOMESSAGE No eres el Admin");
+        if (!this.Admin.equals(jugador)) {
+            jugador.getPW().println("INFOMESSAGE No eres el Admin, el Admin es: " + this.getAdmin().getNombre());
         }
     }
 }

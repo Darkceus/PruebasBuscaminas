@@ -63,20 +63,6 @@ public class ServidorBuscaminas {
             this.socket = socket;
         }
         
-        /*public void EnviarMensaje(String input) {
-            if (!input.equals("")) {
-                for (Jugador informacionJugador : jugadores) {
-                    if (informacionJugador.getSala() == numerosala) {
-                        informacionJugador.getPW().println("MENSAJE " + informacionJugador.getNombre() + ": " + input);
-                        System.out.println("este vato esta en sala: " + numerosala);
-                        System.out.println("sala del vato a enviar: " + informacionJugador.getSala());
-                        System.out.println("sala del vato a que envia : " + numerosala);
-                    }
-
-                }
-            }
-        }*/
-        
         public int convertirInt(String num){
             int num2 = -1;
             try{
@@ -102,6 +88,7 @@ public class ServidorBuscaminas {
                         return;
                     }
                     synchronized (SALAS) {
+                        boolean entro = false;
                         jugador = new Jugador(nombre, Escritor);
                         for (Sala sala2 : SALAS.values()) {
                             if (sala2.checarDisponibilidad()) {
@@ -109,11 +96,12 @@ public class ServidorBuscaminas {
                                     this.sala = sala2;
                                     this.sala.agregarJugador(jugador);
                                     this.jugador.getPW().println("INFOMESSAGE Bienvenido " + nombre);
+                                    entro = true;
                                     break;
                                 }
                             }
                         }
-                        if (this.sala == null) {
+                        if (!entro) {
                             int id = SALAS.size() + 1;
                             this.sala = new Sala(id, jugador);
                             SALAS.put(id, this.sala);
@@ -122,7 +110,7 @@ public class ServidorBuscaminas {
                         break;
                     }
                 }
-                Escritor.println("NAMEACCEPTED " + nombre);
+                Escritor.println("NAMEACCEPTED " + nombre + "," + sala.getID());
                 sala.enviarInfo("MESSAGE " + jugador.getNombre() + " ha entrado");
                 while (true) {
                     String input;
@@ -134,8 +122,6 @@ public class ServidorBuscaminas {
                             return;
                         } else if (input.toLowerCase().startsWith("/iniciarjuego")) {
                             sala.iniciarJuego(jugador);
-                        } else if (input.startsWith("ABRIRJUEGO ")) {
-                            
                         } else if (input.startsWith("CLICIZQUIERDO ")) {
                             if (cap) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");
@@ -160,12 +146,17 @@ public class ServidorBuscaminas {
             } finally {
                 if (Escritor != null || sala != null || jugador != null) {
                     if (!prueba) {
+                        jugador.quitarBanderas();
                         sala.eliminarJugador(jugador);
+                        if (sala.getTam() == 1 && sala.estaIniciado()) {
+                            sala.enviarInfo("INFOMESSAGE Eres el único que queda, el juego va a terminar");
+                            sala.getJuego().mostrarPuntos();
+                        }
                         if (!sala.estaVacia()) {
                             sala.enviarInfo("MESSAGE " + jugador.getNombre() + " ha salido");
                             if (sala.getPrimerJugador() != sala.getAdmin()) {
                                 sala.setAdmin(sala.getPrimerJugador());
-                                sala.enviarInfo("MESSAGE " + sala.getJugador(0).getNombre() + " es el nuevo Administrador de la Sala");
+                                //sala.enviarInfo("MESSAGE " + sala.getJugador(0).getNombre() + " es el nuevo Administrador de la Sala");
                             }
                         } else {
                             SALAS.remove(sala.getID());
