@@ -8,10 +8,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -32,12 +33,12 @@ public class PrincipalClienteJugador extends JFrame {
     JTextArea messageArea = new JTextArea(16, 50);
     private JLabel tiempo;
     private JLabel texto;
+    private int tamAlto;
+    private int tamAncho;
     //private JButton Comenzar;
 
     public PrincipalClienteJugador() {
-        //this.direccion = direccionServer;
         validarDireccion(getDireccion());
-        //this.puerto = convertirInt(puerto);
         validarPuerto(getPuerto());
         setTitle("Buscaminas");
         texto = new JLabel("Banderas Restantes: 0");
@@ -53,7 +54,6 @@ public class PrincipalClienteJugador extends JFrame {
         frame.getContentPane().add(textField, BorderLayout.SOUTH);
         frame.getContentPane().add(new JScrollPane(messageArea), BorderLayout.CENTER);
         frame.pack();
-
         textField.addActionListener((ActionEvent e) -> {
             out.println(textField.getText());
             textField.setText("");
@@ -119,12 +119,29 @@ public class PrincipalClienteJugador extends JFrame {
                     tam = linea.substring(6).split(",");
                     if (tam.length == 7) {
                         System.out.println(Arrays.toString(tam));
-                        juego = new TableroJuego(texto, tiempo, out, convertirInt(tam[0]), convertirInt(tam[1]), convertirInt(tam[2]), convertirInt(tam[3]), convertirInt(tam[4]), convertirInt(tam[5]), convertirInt(tam[6]));
+                        tamAlto = convertirInt(tam[2]);
+                        tamAncho = convertirInt(tam[3]);
+                        //cargarImagenes();
+                        juego = new TableroJuego(texto, tiempo, out, convertirInt(tam[0]), convertirInt(tam[1]), tamAlto, tamAncho, convertirInt(tam[4]), convertirInt(tam[5]), convertirInt(tam[6]));
                         add(juego, BorderLayout.CENTER);
                         pack();
                         this.setVisible(true);
                     } else {
                         getMensaje2("Error al recibir datos");
+                    }
+                } else if (linea.startsWith("NOMINA ")) {
+                    tam = linea.substring(7).split(",");
+                    if (tam.length == 2) {
+                        juego.noMina(convertirInt(tam[0]), convertirInt(tam[1]));
+                    } else {
+                        getMensaje("Error al poner mina");
+                    }
+                } else if (linea.startsWith("2HAYMINA ")) {
+                    tam = linea.substring(9).split(",");
+                    if (tam.length == 2) {
+                        juego.hayMina2(convertirInt(tam[0]), convertirInt(tam[1]));
+                    } else {
+                        getMensaje("Error al poner mina");
                     }
                 } else if (linea.startsWith("HAYMINA ")) {
                     tam = linea.substring(8).split(",");
@@ -133,19 +150,31 @@ public class PrincipalClienteJugador extends JFrame {
                     } else {
                         getMensaje("Error al poner mina");
                     }
+                } else if (linea.startsWith("2DESCUBRIRCAMPO ")) {
+                    tam = linea.substring(16).split(",");
+                    if (tam.length == 2) {
+                        juego.descubrirCampo2(convertirInt(tam[0]), convertirInt(tam[1]));
+                    } else {
+                        getMensaje("Error al descubrir campo");
+                    }
                 } else if (linea.startsWith("DESCUBRIRCAMPO ")) {
                     tam = linea.substring(15).split(",");
-                    if (tam.length == 4) {
-                        System.out.println("X: " + convertirInt(tam[0]) + ", Y: " + convertirInt(tam[1]) + ", Valor: " + convertirInt(tam[2]));
-                        juego.descubrirCampo(convertirInt(tam[0]), convertirInt(tam[1]), convertirInt(tam[2]), convertirInt(tam[3]));
+                    if (tam.length == 3) {
+                        juego.descubrirCampo(convertirInt(tam[0]), convertirInt(tam[1]), convertirInt(tam[2]));
                     } else {
-                        getMensaje("Error al decubrir campo");
+                        getMensaje("Error al descubrir campo");
                     }
-                } else if (linea.startsWith("INICIARJUEGO ")) {
-                    
                 } else if (linea.startsWith("NAMEACCEPTED ")) {
-                    this.setTitle("Buscaminas - " + linea.substring(13));
-                    textField.setEditable(true);
+                    tam = linea.substring(13).split(",");
+                    if (tam.length == 2) {
+                        String sala = tam[1];
+                        String nombre = tam[0];
+                        frame.setTitle("Chat Buscaminas - Sala: " + sala + " - Jugador: " + nombre);
+                        this.setTitle("Buscaminas - Sala: " + sala + " - Jugador: " + nombre);
+                        textField.setEditable(true);
+                    } else {
+                        getMensaje("Error al recibir nombre");
+                    }
                 } else if (linea.startsWith("PUNTOS ")) {
                     tam = linea.substring(7).split("\\.");
                     if (tam.length > 0 && tam.length < 5) {
@@ -154,6 +183,8 @@ public class PrincipalClienteJugador extends JFrame {
                             jugadores += tam1 + "\n";
                         }
                         getMensaje(jugadores);
+                        juego.setVisible(false);
+                        juego.cerrarJuego();
                     } else {
                         getMensaje("Error al recibir datos");
                     }
@@ -164,6 +195,8 @@ public class PrincipalClienteJugador extends JFrame {
                 }
             }
         } finally {
+            juego.setVisible(false);
+            juego.cerrarJuego();
             frame.setVisible(false);
             frame.dispose();
             setVisible(false);
@@ -188,6 +221,10 @@ public class PrincipalClienteJugador extends JFrame {
     }
 
     private void validarDireccion(String valor) {
+        if(valor == null || valor.equals("") || valor.isEmpty()){
+            System.err.println("Debes de poner una dirección válida");
+            System.exit(0);
+        }
         if (valor.equalsIgnoreCase("localhost")) {
             this.direccion = "127.0.0.1";
             return;
@@ -230,8 +267,8 @@ public class PrincipalClienteJugador extends JFrame {
 
         private final int FILAS;
         private final int COLUMNAS;
-        private final int TAM_ALTO;
-        private final int TAM_ANCHO;
+        private final int tamAlto;
+        private final int tamAncho;
         private final int NUM_JUGADOR;
         private int X;
         private int Y;
@@ -240,8 +277,8 @@ public class PrincipalClienteJugador extends JFrame {
         public TableroJuego(int filas, int columnas, int AltoCampo, int AnchoCampo, int NumJugador) {
             FILAS = filas;
             COLUMNAS = columnas;
-            TAM_ALTO = AltoCampo;
-            TAM_ANCHO = AnchoCampo;
+            tamAlto = AltoCampo;
+            tamAncho = AnchoCampo;
             NUM_JUGADOR = NumJugador;
             BOTONES = new JButton[FILAS][COLUMNAS];
             iniciarTablero();
@@ -252,7 +289,7 @@ public class PrincipalClienteJugador extends JFrame {
             for (int y = 0; y < COLUMNAS; y++) {
                 for (int x = 0; x < FILAS; x++) {
                     BOTONES[x][y] = new JButton();
-                    BOTONES[x][y].setPreferredSize(new Dimension(TAM_ANCHO, TAM_ALTO));
+                    BOTONES[x][y].setPreferredSize(new Dimension(tamAncho, tamAlto));
                     BOTONES[x][y].addMouseListener(new EventoClic());
                     this.add(BOTONES[x][y]);
                     BOTONES[x][y].setEnabled(true);

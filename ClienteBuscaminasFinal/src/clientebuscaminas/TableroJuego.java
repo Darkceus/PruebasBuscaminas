@@ -11,11 +11,11 @@ import javax.swing.*;
 
 public class TableroJuego extends JPanel {
     
-    /*private final int BANDERA_J1 = 11;
+    private final int BANDERA_J1 = 11;
     private final int BANDERA_J2 = 13;
     private final int BANDERA_J3 = 14;
-    private final int BANDERA_J4 = 15;*/
-    private final Color COLOR_J1 = Color.YELLOW;
+    private final int BANDERA_J4 = 15;
+    /*private final Color COLOR_J1 = Color.YELLOW;
     private final Color COLOR_J2 = Color.BLUE;
     private final Color COLOR_J3 = Color.GREEN;
     private final Color COLOR_J4 = Color.ORANGE;
@@ -23,11 +23,13 @@ public class TableroJuego extends JPanel {
     private final Color NO_COLOR = null;
     private final String TEXTO_BANDERA = "X";
     private final String TEXTO_MINA = "O";
-    private final Color COLOR_APLASTADO = Color.WHITE;
-    //private final int MINA = 9;
-    //private final int BASE_2 = 10;
-    //private final int NUM_IMAGENES = 16;
-    //private final ImageIcon[] IMAGENES;
+    private final Color COLOR_APLASTADO = Color.WHITE;*/
+    private final int BASE_1 = 0;
+    private final int MINA = 9;
+    private final int BASE_2 = 10;
+    private final int NO_MINA = 12;
+    private final int NUM_IMAGENES = 16;
+    private final ImageIcon[] IMAGENES;
     private final int FILAS;
     private final int COLUMNAS;
     private final int TAM_ALTO;
@@ -53,7 +55,6 @@ public class TableroJuego extends JPanel {
     private final int ADMIN;
 
     public TableroJuego(JLabel texto, JLabel tiempo, PrintWriter out, int filas, int columnas, int AltoCampo, int AnchoCampo, int NumMinas, int NumJugador, int NumAdmin) {
-        //this.imagenes = true;
         this.FILAS = filas;
         this.COLUMNAS = columnas;
         this.TAM_ALTO = AltoCampo;
@@ -68,8 +69,8 @@ public class TableroJuego extends JPanel {
         this.texto.setText("Banderas Restantes: " + minasRes);
         this.tiempo = tiempo;
         this.setLayout(new GridLayout(FILAS, COLUMNAS));
-        //this.IMAGENES = new ImageIcon[NUM_IMAGENES];
-        //cargarImagenes();
+        this.IMAGENES = new ImageIcon[NUM_IMAGENES];
+        cargarImagenes();
         BOTONES = new JButton[FILAS][COLUMNAS];
         crearBotones();
         inicio = true;
@@ -77,12 +78,12 @@ public class TableroJuego extends JPanel {
         Tiempo();
     }
     
-    /*private void cargarImagenes(){
+    private void cargarImagenes() {
         for (int i = 0; i < NUM_IMAGENES; i++) {
-            String ruta = "src/imagenes/" + i + ".png";
-            IMAGENES[i] = new ImageIcon((new ImageIcon(ruta)).getImage().getScaledInstance(TAM_ANCHO, TAM_ALTO, java.awt.Image.SCALE_DEFAULT));
+            String ruta = "/imagenes/" + i + ".png";
+            IMAGENES[i] = new ImageIcon((new ImageIcon(this.getClass().getResource(ruta))).getImage().getScaledInstance(TAM_ANCHO, TAM_ALTO, java.awt.Image.SCALE_DEFAULT));
         }
-    }*/
+    }
     
     private void validaciones(){
         if (this.FILAS != this.COLUMNAS) {
@@ -108,9 +109,9 @@ public class TableroJuego extends JPanel {
     }
     
     public void ponerBandera(int x, int y, int numJugador) {
-        //BOTONES[x][y].setIcon(obtenerIcono(numJugador));
-        BOTONES[x][y].setBackground(obtenerColor(numJugador));
-        BOTONES[x][y].setText(TEXTO_BANDERA);
+        BOTONES[x][y].setIcon(obtenerIcono(numJugador));
+        /*BOTONES[x][y].setBackground(obtenerColor(numJugador));
+        BOTONES[x][y].setText(TEXTO_BANDERA);*/
         if (numJugador == NUM_JUGADOR) {
             minasRes--;
             texto.setText("Banderas Restantes: " + minasRes);
@@ -118,9 +119,9 @@ public class TableroJuego extends JPanel {
     }
     
     public void quitarBandera(int x, int y, int numJugador){
-        //BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
-        BOTONES[x][y].setBackground(NO_COLOR);
-        BOTONES[x][y].setText(null);
+        BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
+        /*BOTONES[x][y].setBackground(NO_COLOR);
+        BOTONES[x][y].setText(null);*/
         if (numJugador == NUM_JUGADOR) {
             minasRes++;
             texto.setText("Banderas Restantes: " + minasRes);
@@ -128,9 +129,9 @@ public class TableroJuego extends JPanel {
     }
     
     public void hayMina(int x, int y, int numJugador){
-        //BOTONES[x][y].setIcon(IMAGENES[MINA]);
-        BOTONES[x][y].setBackground(COLOR_MINA);
-        BOTONES[x][y].setText(TEXTO_MINA);
+        BOTONES[x][y].setIcon(IMAGENES[MINA]);
+        /*BOTONES[x][y].setBackground(COLOR_MINA);
+        BOTONES[x][y].setText(TEXTO_MINA);*/
         if(numJugador == NUM_JUGADOR){
             inicio = false;
             t.stop();
@@ -138,14 +139,35 @@ public class TableroJuego extends JPanel {
         }
     }
     
-    public void descubrirCampo(int x, int y, int valorCampo, int numJugador){
-        //System.out.println("Valor: " + valorCampo);
-        BOTONES[x][y].setBackground(COLOR_APLASTADO);
-        BOTONES[x][y].setText(""+valorCampo);
-        //BOTONES[x][y].setIcon(IMAGENES[valorCampo]);
+    public void noMina(int x, int y){
+        BOTONES[x][y].setIcon(IMAGENES[NO_MINA]);
+        /*BOTONES[x][y].setBackground(COLOR_MINA);
+        BOTONES[x][y].setText(TEXTO_MINA);*/
     }
     
-    private Color obtenerColor(int valor){
+    public void hayMina2(int x, int y){
+        BOTONES[x][y].setIcon(IMAGENES[MINA]);
+        /*BOTONES[x][y].setBackground(COLOR_MINA);
+        BOTONES[x][y].setText(TEXTO_MINA);*/
+    }
+    
+    public void descubrirCampo(int x, int y, int valorCampo){
+        /*BOTONES[x][y].setBackground(COLOR_APLASTADO);
+        if (valorCampo > 0) {
+            BOTONES[x][y].setText("" + valorCampo);
+        }*/
+        BOTONES[x][y].setIcon(IMAGENES[valorCampo]);
+    }
+    
+    public void descubrirCampo2(int x, int y){
+        /*BOTONES[x][y].setBackground(COLOR_APLASTADO);
+        if (valorCampo > 0) {
+            BOTONES[x][y].setText("" + valorCampo);
+        }*/
+        BOTONES[x][y].setIcon(IMAGENES[BASE_1]);
+    }
+    
+    /*private Color obtenerColor(int valor){
         switch (valor) {
             case 1:
                 return COLOR_J1;
@@ -157,9 +179,9 @@ public class TableroJuego extends JPanel {
                 return COLOR_J4;
         }
         return null;
-    }
+    }*/
     
-    /*private Icon obtenerIcono(int valor){
+    private Icon obtenerIcono(int valor){
         switch (valor) {
             case 1:
                 return IMAGENES[BANDERA_J1];
@@ -171,13 +193,13 @@ public class TableroJuego extends JPanel {
                 return IMAGENES[BANDERA_J4];
         }
         return null;
-    }*/
+    }
     
     private void crearBotones() {
         for (int y = 0; y < COLUMNAS; y++) {
             for (int x = 0; x < FILAS; x++) {
                 BOTONES[x][y] = new JButton();
-                //BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
+                BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
                 BOTONES[x][y].setPreferredSize(new Dimension(TAM_ANCHO, TAM_ALTO));
                 BOTONES[x][y].addMouseListener(new EventoClic());
                 this.add(BOTONES[x][y]);
@@ -214,60 +236,20 @@ public class TableroJuego extends JPanel {
         t.start();
     }
     
-    private String checar(){
-        if (NUM_JUGADOR == 1 && X == 0 && !inicio2) {
-            inicio2 = true;
-            return X + "," + Y;
-        } else if (NUM_JUGADOR == 2 && X == (FILAS - 1)  && !inicio2) {
-            inicio2 = true;
-            return X + "," + Y;
-        } else if (NUM_JUGADOR == 3 && Y == 0  && !inicio2) {
-            inicio2 = true;
-            return X + "," + Y;
-        } else if (NUM_JUGADOR == 4 && Y == (COLUMNAS - 1)  && !inicio2) {
-            inicio2 = true;
-            return X + "," + Y;
-        } else {
-            if (!inicio2) {
-                String texto2 = "";
-                switch (NUM_JUGADOR) {
-                    case 1: {
-                        texto2 = "Debes comenzar por Izquierda";
-                        break;
-                    }
-                    case 2: {
-                        texto2 = "Debes comenzar por Derecha";
-                        break;
-                    }
-                    case 3: {
-                        texto2 = "Debes comenzar por Arriba";
-                        break;
-                    }
-                    case 4: {
-                        texto2 = "Debes comenzar por Abajo";
-                        break;
-                    }
-                }
-                JOptionPane.showMessageDialog(this, texto2);
-            }
-        }
-        return "";
+    public void cerrarJuego() {
+        JFrame frame = (JFrame) this.getTopLevelAncestor();
+        frame.dispose();
     }
     
     private String clic(JButton boton) {
         JButton boton2;
-        hola:
         for (int y = 0; y < COLUMNAS; y++) {
             for (int x = 0; x < FILAS; x++) {
                 boton2 = BOTONES[x][y];
                 if (boton2 == boton) {
                     X = x;
                     Y = y;
-                    if (!inicio2) {
-                        return checar();
-                    } else {
-                        return X + "," + Y;
-                    }
+                    return X + "," + Y;
                 }
             }
         }
