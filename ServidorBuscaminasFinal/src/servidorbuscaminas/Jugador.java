@@ -11,7 +11,7 @@ public class Jugador {
 
     public final static boolean ESTADO_JUGANDO = true;
     public final static boolean ESTADO_ESPECTADOR = false;
-    private ArrayList<Campo> listaBanderas;
+    private final ArrayList<Campo> listaBanderas;
     private int id;
     private boolean estado;
     private boolean clic;

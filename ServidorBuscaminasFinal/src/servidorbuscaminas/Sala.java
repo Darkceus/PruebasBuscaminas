@@ -24,16 +24,15 @@ public class Sala {
         this.disponible = true;
         this.iniciado = false;
         this.agregarAdmin(jugador);
-        //juego = new Juego(this);
     }
 
     public ArrayList<Jugador> getLista() {
         return this.listaJugadores;
     }
     
-    public void agregarPerdedor(Jugador jugador){
+    public void agregarPerdedor(Jugador jugador) {
         this.listaPerdedores.add(jugador);
-        if(this.listaPerdedores.size() == this.getTam()){
+        if (this.listaPerdedores.size() == this.getTam()) {
             this.juego.mostrarPuntos();
         }
     }
@@ -43,7 +42,12 @@ public class Sala {
     }
 
     public boolean checarJugador(Jugador jugador) {
-        return this.listaJugadores.indexOf(jugador) >= 0;
+        for (Jugador jugador2 : this.listaJugadores) {
+            if (jugador2.getNombre().equals(jugador.getNombre())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setAdmin(Jugador admin) {
