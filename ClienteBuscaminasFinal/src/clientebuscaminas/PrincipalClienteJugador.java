@@ -8,11 +8,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -31,30 +29,28 @@ public class PrincipalClienteJugador extends JFrame {
     JFrame frame = new JFrame("Chatter");
     JTextField textField = new JTextField(50);
     JTextArea messageArea = new JTextArea(16, 50);
-    private JLabel tiempo;
-    private JLabel texto;
-    private int tamAlto;
-    private int tamAncho;
-    //private JButton Comenzar;
+    private final JLabel tiempo;
+    private final JLabel texto;
 
     public PrincipalClienteJugador() {
+        //this.setUndecorated(true);
         validarDireccion(getDireccion());
         validarPuerto(getPuerto());
-        setTitle("Buscaminas");
+        this.setTitle("Buscaminas");
         texto = new JLabel("Banderas Restantes: 0");
-        add(texto, BorderLayout.NORTH);
+        this.add(texto, BorderLayout.NORTH);
         tiempo = new JLabel("Tiempo: 00:00");
-        add(tiempo, BorderLayout.SOUTH);
-        /*Comenzar = new JButton("Comenzar juego");
-        add(Comenzar, BorderLayout.AFTER_LINE_ENDS);*/
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.add(tiempo, BorderLayout.SOUTH);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         textField.setEditable(false);
         messageArea.setEditable(false);
         frame.getContentPane().add(textField, BorderLayout.SOUTH);
         frame.getContentPane().add(new JScrollPane(messageArea), BorderLayout.CENTER);
         frame.pack();
         juego = new TableroJuego();
+        this.setResizable(false);
+        this.setLocationRelativeTo(null);
         textField.addActionListener((ActionEvent e) -> {
             out.println(textField.getText());
             textField.setText("");
@@ -98,10 +94,6 @@ public class PrincipalClienteJugador extends JFrame {
                     out.println(getNombre());
                 } else if (linea.startsWith("INFOMESSAGE")) {
                     mensaje(linea);
-                } else if (linea.startsWith("INFO2MESSAGE")) {
-                    
-                } else if (linea.startsWith("INFO3MESSAGE")) {
-                    
                 } else if (linea.startsWith("PONERBANDERA ")) {
                     tam = linea.substring(13).split(",");
                     if (tam.length == 3) {
@@ -120,10 +112,7 @@ public class PrincipalClienteJugador extends JFrame {
                     tam = linea.substring(6).split(",");
                     if (tam.length == 7) {
                         System.out.println(Arrays.toString(tam));
-                        tamAlto = convertirInt(tam[2]);
-                        tamAncho = convertirInt(tam[3]);
-                        //cargarImagenes();
-                        juego = new TableroJuego(texto, tiempo, out, convertirInt(tam[0]), convertirInt(tam[1]), tamAlto, tamAncho, convertirInt(tam[4]), convertirInt(tam[5]), convertirInt(tam[6]));
+                        juego = new TableroJuego(texto, tiempo, out, convertirInt(tam[0]), convertirInt(tam[1]), convertirInt(tam[2]), convertirInt(tam[3]), convertirInt(tam[4]), convertirInt(tam[5]), convertirInt(tam[6]));
                         add(juego, BorderLayout.CENTER);
                         pack();
                         this.setVisible(true);
@@ -221,6 +210,7 @@ public class PrincipalClienteJugador extends JFrame {
     public void Abrir() throws IOException {
         run();
         this.setVisible(true);
+        this.setUndecorated(true);
     }
 
     private void validarDireccion(String valor) {

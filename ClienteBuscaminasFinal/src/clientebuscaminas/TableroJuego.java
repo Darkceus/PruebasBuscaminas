@@ -48,7 +48,6 @@ public class TableroJuego extends JPanel {
     private final JLabel tiempo;
     //private final JButton comenzarJuego;
     private boolean inicio;
-    private boolean inicio2;
     private final int NUM_JUGADOR;
     //private final boolean imagenes;
     private final PrintWriter out;
@@ -77,7 +76,6 @@ public class TableroJuego extends JPanel {
         this.NUMERO_MINAS = NumMinas;
         this.NUM_JUGADOR = NumJugador;
         this.ADMIN = NumAdmin;
-        validaciones();
         this.minasRes = NUMERO_MINAS;
         this.out = out;
         this.texto = texto;
@@ -89,7 +87,6 @@ public class TableroJuego extends JPanel {
         this.BOTONES = new JButton[FILAS][COLUMNAS];
         crearBotones();
         inicio = true;
-        inicio2 = false;
         Tiempo();
     }
     
@@ -97,29 +94,6 @@ public class TableroJuego extends JPanel {
         for (int i = 0; i < NUM_IMAGENES; i++) {
             String ruta = "/imagenes/" + i + ".png";
             IMAGENES[i] = new ImageIcon((new ImageIcon(this.getClass().getResource(ruta))).getImage().getScaledInstance(TAM_ANCHO, TAM_ALTO, java.awt.Image.SCALE_DEFAULT));
-        }
-    }
-    
-    private void validaciones(){
-        if (this.FILAS != this.COLUMNAS) {
-            System.out.println("El número de Filas y Columnas deben ser iguales");
-            System.exit(1);
-        }
-        if ((this.FILAS > 30 || this.FILAS < 0) || (this.COLUMNAS > 30 || this.COLUMNAS < 0)) {
-            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayor a 0");
-            System.exit(2);
-        }
-        if (this.TAM_ALTO != this.TAM_ANCHO) {
-            System.out.println("El tamaño de los campos deben ser iguales");
-            System.exit(3);
-        }
-        if ((this.TAM_ALTO > 20 || this.TAM_ALTO < 0) || (this.TAM_ANCHO > 20 || this.TAM_ANCHO < 0)) {
-            System.out.println("El tamaño de los campos deben ser menores o iguales a 20 y mayor a 0");
-            System.exit(2);
-        }
-        if (this.NUMERO_MINAS > (this.FILAS * this.COLUMNAS)) {
-            System.out.println("El número de minas debe ser menor al tamaño total del tablero.");
-            System.exit(2);
         }
     }
     
