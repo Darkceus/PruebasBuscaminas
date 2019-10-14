@@ -14,7 +14,7 @@ public class Sala {
     private final ArrayList<Jugador> listaPerdedores;
     private boolean disponible;
     private boolean iniciado;
-    private Juego juego;
+    private Juego juego = new Juego();
 
     public Sala(int id, Jugador jugador) {
         this.id = id;
@@ -94,8 +94,8 @@ public class Sala {
 
     public void enviarDatosJuego() {
         listaJugadores.forEach((jugador) -> {
-            jugador.getPW().println("DATOS " + Juego.getFILAS() + "," + Juego.getCOLUMNAS() + "," + Juego.getTAM_ALTO() + "," + Juego.getTAM_ANCHO()
-                    + ","  + Juego.getNUMERO_MINAS() + "," + jugador.getID() + "," + this.getAdmin().getID());
+            jugador.getPW().println("DATOS " + Juego.FILAS + "," + Juego.COLUMNAS + "," + Juego.TAM_ALTO + "," + Juego.TAM_ANCHO
+                    + ","  + Juego.NUMERO_MINAS + "," + jugador.getID() + "," + this.getAdmin().getID());
         });
     }
 
@@ -147,6 +147,7 @@ public class Sala {
         this.listaJugadores.forEach((jugador) -> {
             jugador.reiniciarClic();
             jugador.setEstado(Jugador.ESTADO_JUGANDO);
+            jugador.reiniciarPuntos();
         });
     }
     
@@ -157,12 +158,13 @@ public class Sala {
                 this.disponible = true;
             }
             reiniciarJugadores();
+            this.listaPerdedores.clear();
         }
     }
 
     public void iniciarJuego(Jugador jugador) {
         if (getTam() > 1 && !iniciado && this.Admin.equals(jugador)) {
-            reiniciarJugadores();
+            //reiniciarJugadores();
             juego = new Juego(this);
             this.iniciado = true;
             this.disponible = false;

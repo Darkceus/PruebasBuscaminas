@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -102,7 +103,11 @@ public class ServidorBuscaminas {
                         int espacio = input.indexOf(' ');
                         boolean prueba = espacio >= 0 && espacio < input.length();
                         if (input.toLowerCase().startsWith("/iniciarjuego")) {
-                            sala.iniciarJuego(jugador);
+                            if (sala.getJuego().validaciones()) {
+                                sala.iniciarJuego(jugador);
+                            } else {
+                                sala.enviarInfo("MESSAGE Los datos en el servidor son erróneos.");
+                            }
                         } else if (input.startsWith("CLICIZQUIERDO ")) {
                             if (prueba) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");

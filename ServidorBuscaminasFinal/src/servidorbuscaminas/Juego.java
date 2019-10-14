@@ -2,6 +2,7 @@ package servidorbuscaminas;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -9,19 +10,26 @@ import java.util.Collections;
  */
 public class Juego {
 
-    private static final int FILAS = 30;
-    private static final int COLUMNAS = 30;
-    private static final int TAM_ALTO = 20;
-    private static final int TAM_ANCHO = 20;
-    private static final int NUMERO_MINAS = 200;
+    public static final int FILAS = 30;
+    public static final int COLUMNAS = 30;
+    public static final int TAM_ALTO = 20;
+    public static final int TAM_ANCHO = 20;
+    public static final int NUMERO_MINAS = 200;
     private final Campo[][] TABLERO;
     private final ArrayList<Campo> listaMinas;
     private boolean inicio;
     private final int[] NUM_X = {-1, 0, 1, -1, 1, -1, 0, 1};
     private final int[] NUM_Y = {-1, -1, -1, 0, 0, 1, 1, 1};
     private final Sala sala;
+    
+    public Juego() {
+        this.TABLERO = null;
+        this.listaMinas = null;
+        this.sala = null;
+    }
 
     public Juego(Sala sala) {
+        //validaciones();
         this.sala = sala;
         this.TABLERO = new Campo[FILAS][COLUMNAS];
         listaMinas = new ArrayList<>();
@@ -30,6 +38,35 @@ public class Juego {
         checarPerimetro();
         imprimirInfo();
     }
+    
+    public boolean validaciones(){
+        if (Juego.FILAS != Juego.COLUMNAS) {
+            System.out.println("El número de Filas y Columnas deben ser iguales.");
+            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser iguales.");
+            return false;
+        }
+        if ((Juego.FILAS > 30 || Juego.FILAS < 0) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 0)) {
+            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 0.");
+            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 0.");
+            return false;
+        }
+        if (Juego.TAM_ALTO != Juego.TAM_ANCHO) {
+            System.out.println("El tamaño de los campos deben ser iguales.");
+            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser iguales.");
+            return false;
+        }
+        if ((Juego.TAM_ALTO > 20 || Juego.TAM_ALTO < 0) || (Juego.TAM_ANCHO > 20 || Juego.TAM_ANCHO < 0)) {
+            System.out.println("El tamaño de los campos deben ser menores o iguales a 20 y mayores a 0.");
+            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser menores o iguales a 20 y mayores a 0.");
+            return false;
+        }
+        if (Juego.NUMERO_MINAS > (Juego.FILAS * Juego.COLUMNAS)) {
+            System.out.println("El número de minas debe ser menor al tamaño total del tablero.");
+            JOptionPane.showMessageDialog(null, "El número de minas debe ser menor al tamaño total del tablero.");
+            return false;
+        }
+        return true;
+    }
 
     public void setInicio(boolean inicio) {
         this.inicio = inicio;
@@ -37,26 +74,6 @@ public class Juego {
 
     public boolean getInicio() {
         return this.inicio;
-    }
-
-    public static int getFILAS() {
-        return Juego.FILAS;
-    }
-
-    public static int getCOLUMNAS() {
-        return Juego.COLUMNAS;
-    }
-
-    public static int getTAM_ALTO() {
-        return Juego.TAM_ALTO;
-    }
-
-    public static int getTAM_ANCHO() {
-        return Juego.TAM_ANCHO;
-    }
-    
-    public static int getNUMERO_MINAS(){
-        return Juego.NUMERO_MINAS;
     }
 
     private void imprimirInfo() {
@@ -128,7 +145,7 @@ public class Juego {
             for (int i = 0; i < 8; i++) {
                 x2 = NUM_X[i] + minas.getX();
                 y2 = NUM_Y[i] + minas.getY();
-                if ((x2 > NUM_X[0] && x2 < Juego.getFILAS()) && (y2 > NUM_Y[0] && y2 < Juego.getCOLUMNAS())) {
+                if ((x2 > NUM_X[0] && x2 < Juego.FILAS) && (y2 > NUM_Y[0] && y2 < Juego.COLUMNAS)) {
                     campo = TABLERO[x2][y2];
                     if (campo.getValor() != Campo.VALOR_MINA) {
                         campo.aumentarValor();
@@ -162,11 +179,11 @@ public class Juego {
     private boolean checarEsquina(Jugador jugador, Campo campo) {
         if (jugador.getID() == 1 && campo.getX() == 0) {
             return true;
-        } else if (jugador.getID() == 2 && campo.getX() == (Juego.getFILAS() - 1)) {
+        } else if (jugador.getID() == 2 && campo.getX() == (Juego.FILAS - 1)) {
             return true;
         } else if (jugador.getID() == 3 && campo.getY() == 0) {
             return true;
-        } else if (jugador.getID() == 4 && campo.getY() == (Juego.getCOLUMNAS() - 1)) {
+        } else if (jugador.getID() == 4 && campo.getY() == (Juego.COLUMNAS - 1)) {
             return true;
         }
         return false;
@@ -203,7 +220,7 @@ public class Juego {
         for (int i = 0; i < 8; i++) {
             x2 = NUM_X[i] + campo.getX();
             y2 = NUM_Y[i] + campo.getY();
-            if ((x2 > NUM_X[0] && x2 < Juego.getFILAS()) && (y2 > NUM_Y[0] && y2 < Juego.getCOLUMNAS())) {
+            if ((x2 > NUM_X[0] && x2 < Juego.FILAS) && (y2 > NUM_Y[0] && y2 < Juego.COLUMNAS)) {
                 campo2 = TABLERO[x2][y2];
                 if (campo2.getEstado() == Campo.ESTADO_INICIAL) {
                     campo2.setAdmin(jugador);
@@ -248,7 +265,8 @@ public class Juego {
             }
         }
         if (checar == NUMERO_MINAS) {
-            sala.enviarInfo("GANAR");
+            sala.enviarInfo("INFOMESSAGE Han puesto banderas sobre todas las minas");
+            this.mostrarPuntos();
         }
     }
     
