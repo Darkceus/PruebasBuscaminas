@@ -27,7 +27,7 @@ public class Jugador {
         this.estado = Jugador.ESTADO_JUGANDO;
         this.clic = false;
         this.puntos = 0;
-        listaBanderas = new ArrayList<>();
+        this.listaBanderas = new ArrayList<>();
     }
     
     public boolean sinBanderas(){

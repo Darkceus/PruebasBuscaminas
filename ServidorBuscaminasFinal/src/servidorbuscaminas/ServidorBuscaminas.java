@@ -19,14 +19,40 @@ import javax.swing.JOptionPane;
 public class ServidorBuscaminas {
 
     public static final Map<Integer, Sala> SALAS = new TreeMap<>();
+    private int puerto;
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        ServidorBuscaminas sb = new ServidorBuscaminas();
+        sb.iniciarServidor();
+    }
+    
+    private void iniciarServidor() {
+        validarPuerto(getPuerto());
         System.out.println("El Servidor de Buscaminas está en línea...");
         ExecutorService pool = Executors.newFixedThreadPool(500);
         try (ServerSocket listener = new ServerSocket(59001)) {
             while (true) {
                 pool.execute(new Handler(listener.accept()));
             }
+        } catch (IOException e) {
+            System.out.println("Error al Abrir el Servidor");
+        }
+    }
+    
+    private String getPuerto() {
+        return JOptionPane.showInputDialog(null, "Puerto", "Ingresa un puerto: ", JOptionPane.PLAIN_MESSAGE);
+    }
+    
+    private void validarPuerto(String valor) {
+        try {
+            this.puerto = Integer.parseInt(valor);
+            if (this.puerto < 0) {
+                System.err.println("Debes de poner un puerto válido");
+                System.exit(0);
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Debes de poner un puerto válido");
+            System.exit(0);
         }
     }
 
@@ -95,7 +121,7 @@ public class ServidorBuscaminas {
                     }
                 }
                 Escritor.println("NAMEACCEPTED " + nombre + "," + sala.getID());
-                sala.enviarInfo("MESSAGE " + jugador.getNombre() + " ha entrado");
+                sala.enviarInfo("MESSAGE [Servidor] " + jugador.getNombre() + " ha entrado");
                 while (true) {
                     String input;
                     try {input = Entrada.nextLine();} catch (Exception e) {return;}
@@ -106,7 +132,7 @@ public class ServidorBuscaminas {
                             if (sala.getJuego().validaciones()) {
                                 sala.iniciarJuego(jugador);
                             } else {
-                                sala.enviarInfo("MESSAGE Los datos en el servidor son erróneos.");
+                                sala.enviarInfo("MESSAGE [Servidor] Los datos en el servidor son erróneos.");
                             }
                         } else if (input.startsWith("CLICIZQUIERDO ")) {
                             if (prueba) {
@@ -139,7 +165,7 @@ public class ServidorBuscaminas {
                             sala.getJuego().mostrarPuntos();
                         }
                         if (!sala.estaVacia()) {
-                            sala.enviarInfo("MESSAGE " + jugador.getNombre() + " ha salido");
+                            sala.enviarInfo("MESSAGE [Servidor] " + jugador.getNombre() + " ha salido");
                             Jugador j = sala.getPrimerJugador();
                             if (j != sala.getAdmin()) {
                                 sala.setAdmin(j);

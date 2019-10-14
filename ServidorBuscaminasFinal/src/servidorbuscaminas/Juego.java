@@ -249,7 +249,7 @@ public class Juego {
                 sala.enviarInfo("QUITARBANDERA " + x + "," + y + "," + jugador.getID());
             }
         } else {
-            jugador.getPW().println("MESSAGE Ya perdiste, no puedes jugar");
+            jugador.getPW().println("INFOMESSAGE Ya perdiste, no puedes jugar");
         }
     }
 
@@ -308,7 +308,7 @@ public class Juego {
         sacarPuntaje();
         inicio = false;
         //Collections.sort(sala.getLista(), (Jugador j1, Jugador j2) -> new Integer(j1.getPuntos()).compareTo(new Integer(j2.getPuntos())));
-        sala.enviarInfo("MESSAGE El juego ha terminado");
+        sala.enviarInfo("MESSAGE [Servidor] El juego ha terminado");
         String algo = "";
         for (Jugador jugador : sala.getLista()) {
             algo += "Jugador " + jugador.getID() + ", Nombre: " + jugador.getNombre() + ", Puntos: " + jugador.getPuntos() + ".";

@@ -168,7 +168,7 @@ public class Sala {
             juego = new Juego(this);
             this.iniciado = true;
             this.disponible = false;
-            this.enviarInfo("MESSAGE El juego ha iniciado");
+            this.enviarInfo("MESSAGE [Servidor] El juego ha iniciado");
             this.enviarDatosJuego();
         }
         if (!this.Admin.equals(jugador)) {
