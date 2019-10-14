@@ -99,12 +99,12 @@ public class ServidorBuscaminas {
                     }
                     synchronized (SALAS) {
                         boolean entro = false;
-                        jugador = new Jugador(nombre, Escritor);
+                        this.jugador = new Jugador(nombre, Escritor);
                         for (Sala sala2 : SALAS.values()) {
                             if (sala2.checarDisponibilidad()) {
-                                if (!sala2.checarJugador(jugador)) {
+                                if (!sala2.checarJugador(this.jugador)) {
                                     this.sala = sala2;
-                                    this.sala.agregarJugador(jugador);
+                                    this.sala.agregarJugador(this.jugador);
                                     this.jugador.getPW().println("INFOMESSAGE Bienvenido " + nombre);
                                     entro = true;
                                     break;
@@ -113,7 +113,7 @@ public class ServidorBuscaminas {
                         }
                         if (!entro) {
                             int id = SALAS.size() + 1;
-                            this.sala = new Sala(id, jugador);
+                            this.sala = new Sala(id, this.jugador);
                             SALAS.put(id, this.sala);
                             this.jugador.getPW().println("INFOMESSAGE Bienvenido " + nombre + ", eres el primero en entrar");
                         }

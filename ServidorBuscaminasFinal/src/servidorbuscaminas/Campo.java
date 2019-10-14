@@ -13,17 +13,17 @@ public class Campo {
     public static final int ESTADO_BANDERA_NO_MINA = 3;
     private Jugador Admin;
     private int X = 0;
-    private int y = 0;
+    private int Y = 0;
     private int Valor = 0;
     private int Estado = 0;
 
     public Campo(int x, int y) {
         this.X = x;
-        this.y = y;
+        this.Y = y;
     }
 
     public int getX() {
-        return X;
+        return this.X;
     }
 
     public void setX(int X) {
@@ -31,11 +31,11 @@ public class Campo {
     }
 
     public int getY() {
-        return y;
+        return this.Y;
     }
 
     public void setY(int y) {
-        this.y = y;
+        this.Y = y;
     }
 
     public int getValor() {

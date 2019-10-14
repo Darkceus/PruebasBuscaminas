@@ -200,13 +200,15 @@ public class Juego {
                     if (campo.getValor() == Campo.VALOR_MINA) {
                         jugador.setEstado(Jugador.ESTADO_ESPECTADOR);
                         campo.setEstado(Campo.ESTADO_APLASTADO);
+                        sala.agregarPerdedor(jugador);
                         sala.enviarInfo("HAYMINA " + x + "," + y + "," + jugador.getID());
                         sala.enviarInfo("MESSAGE " + jugador.getNombre() + " ha perdido");
-                        sala.agregarPerdedor(jugador);
                     } else if (campo.getValor() == Campo.VALOR_VACIO) {
                         revelarPerimetro(jugador, campo);
                     }
+                    
                 }
+                checarMinas();
             }
         } else {
             jugador.getPW().println("INFOMESSAGE Ya perdiste, no puedes jugar");
@@ -242,6 +244,7 @@ public class Juego {
                 campo.setAdmin(jugador);
                 jugador.agregarBandera(campo);
                 sala.enviarInfo("PONERBANDERA " + x + "," + y + "," + jugador.getID());
+                checarMinas();
             } else if (campo.getEstado() == Campo.ESTADO_BANDERA && campo.getAdmin().equals(jugador)) {
                 campo.setEstado(Campo.ESTADO_INICIAL);
                 campo.setAdmin(jugador);
@@ -255,17 +258,20 @@ public class Juego {
 
     public void checarMinas() {
         int checar = 0;
+        int checar2 = 0;
         Campo campo;
         for (int y = 0; y < COLUMNAS; y++) {
             for (int x = 0; x < FILAS; x++) {
                 campo = TABLERO[x][y];
                 if (campo.getEstado() == Campo.ESTADO_BANDERA && campo.getValor() == Campo.VALOR_MINA) {
                     checar++;
+                } else if (campo.getEstado() == Campo.ESTADO_APLASTADO) {
+                    checar2++;
                 }
             }
         }
-        if (checar == NUMERO_MINAS) {
-            sala.enviarInfo("INFOMESSAGE Han puesto banderas sobre todas las minas");
+        if (checar == NUMERO_MINAS && checar2 == ((FILAS * COLUMNAS) - NUMERO_MINAS)) {
+            sala.enviarInfo("INFOMESSAGE Han puesto banderas sobre todas las minas y descubierto los campos.");
             this.mostrarPuntos();
         }
     }
@@ -291,7 +297,7 @@ public class Juego {
                 } else {
                     if (campo.getEstado() == Campo.ESTADO_BANDERA) {
                         for (Jugador jugador : sala.getLista()) {
-                            if(campo.getAdmin().equals(jugador)){
+                            if (campo.getAdmin().equals(jugador)) {
                                 jugador.aumentarPuntos();
                             }
                         }
