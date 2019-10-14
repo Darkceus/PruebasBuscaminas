@@ -33,7 +33,6 @@ public class PrincipalClienteJugador extends JFrame {
     private final JLabel texto;
 
     public PrincipalClienteJugador() {
-        //this.setUndecorated(true);
         validarDireccion(getDireccion());
         validarPuerto(getPuerto());
         this.setTitle("Buscaminas");
@@ -192,7 +191,6 @@ public class PrincipalClienteJugador extends JFrame {
             frame.dispose();
             setVisible(false);
             dispose();*/
-            //System.exit(0);
         }
     }
     
@@ -230,9 +228,14 @@ public class PrincipalClienteJugador extends JFrame {
             }
         }
         String[] dir = valor.split("\\.");
-        boolean bol = (convertirInt(dir[0]) <= 255) && (convertirInt(dir[1]) <= 255) && (convertirInt(dir[2]) <= 255) && (convertirInt(dir[3]) <= 254);
-        if ((cont == 3) && (bol)) {
-            this.direccion = valor;
+        if (dir.length == 4) {
+            boolean bol = (convertirInt(dir[0]) <= 255) && (convertirInt(dir[1]) <= 255) && (convertirInt(dir[2]) <= 255) && (convertirInt(dir[3]) <= 254);
+            if ((cont == 3) && (bol)) {
+                this.direccion = valor;
+            } else {
+                System.err.println("Debes de poner una dirección válida");
+                System.exit(0);
+            }
         } else {
             System.err.println("Debes de poner una dirección válida");
             System.exit(0);
@@ -242,6 +245,10 @@ public class PrincipalClienteJugador extends JFrame {
     private void validarPuerto(String valor) {
         try {
             this.puerto = Integer.parseInt(valor);
+            if (this.puerto < 0) {
+                System.err.println("Debes de poner un puerto válido");
+                System.exit(0);
+            }
         } catch (NumberFormatException e) {
             System.err.println("Debes de poner un puerto válido");
             System.exit(0);

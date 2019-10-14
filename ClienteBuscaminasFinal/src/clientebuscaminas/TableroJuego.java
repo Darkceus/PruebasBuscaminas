@@ -36,14 +36,12 @@ public class TableroJuego extends JPanel {
     private final int TAM_ANCHO;
     private final int NUMERO_MINAS;
     private int minasRes;
-    private int X;
-    private int Y;
     private int minutos = 0;
     private int segundos = 0;
     private String minutos2 = "";
     private String segundos2 = "";
     private Thread t;
-    private final JButton[][] BOTONES;
+    private final Boton[][] BOTONES;
     private final JLabel texto;
     private final JLabel tiempo;
     //private final JButton comenzarJuego;
@@ -53,7 +51,7 @@ public class TableroJuego extends JPanel {
     private final PrintWriter out;
     private final int ADMIN;
     
-    public TableroJuego(){
+    public TableroJuego() {
         this.texto = null;
         this.tiempo = null;
         this.out = null;
@@ -84,7 +82,7 @@ public class TableroJuego extends JPanel {
         this.setLayout(new GridLayout(FILAS, COLUMNAS));
         this.IMAGENES = new ImageIcon[NUM_IMAGENES];
         cargarImagenes();
-        this.BOTONES = new JButton[FILAS][COLUMNAS];
+        this.BOTONES = new Boton[FILAS][COLUMNAS];
         crearBotones();
         inicio = true;
         Tiempo();
@@ -121,7 +119,7 @@ public class TableroJuego extends JPanel {
         BOTONES[x][y].setIcon(IMAGENES[MINA]);
         /*BOTONES[x][y].setBackground(COLOR_MINA);
         BOTONES[x][y].setText(TEXTO_MINA);*/
-        if(numJugador == NUM_JUGADOR){
+        if (numJugador == NUM_JUGADOR) {
             inicio = false;
             t.stop();
             JOptionPane.showMessageDialog(this, "Jajaja perdiste xdxdxd");
@@ -187,7 +185,7 @@ public class TableroJuego extends JPanel {
     private void crearBotones() {
         for (int y = 0; y < COLUMNAS; y++) {
             for (int x = 0; x < FILAS; x++) {
-                BOTONES[x][y] = new JButton();
+                BOTONES[x][y] = new Boton(x, y);
                 BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
                 BOTONES[x][y].setPreferredSize(new Dimension(TAM_ANCHO, TAM_ALTO));
                 BOTONES[x][y].addMouseListener(new EventoClic());
@@ -230,43 +228,44 @@ public class TableroJuego extends JPanel {
         frame.dispose();
     }
     
-    private String clic(JButton boton) {
-        JButton boton2;
-        for (int y = 0; y < COLUMNAS; y++) {
-            for (int x = 0; x < FILAS; x++) {
-                boton2 = BOTONES[x][y];
-                if (boton2 == boton) {
-                    X = x;
-                    Y = y;
-                    return X + "," + Y;
-                }
-            }
+    private class Boton extends JButton {
+
+        private int X;
+        private int Y;
+
+        public Boton(int x, int y) {
+            super();
+            this.X = x;
+            this.Y = y;
         }
-        return "";
+
+        public int getX2() {
+            return this.X;
+        }
+
+        public int getY2() {
+            return this.Y;
+        }
     }
 
     private class EventoClic extends MouseAdapter {
 
         public EventoClic() {
-
+            super();
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
             if (inicio) {
-                JButton boton = (JButton) e.getSource();
+                Boton boton = (Boton) e.getSource();
                 String clic = "CLIC";
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     clic += "IZQUIERDO ";
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     clic += "DERECHO ";
                 }
-                String clic2 = clic(boton);
-                if (!clic2.equals("")) {
-                    clic += clic2;
-                    System.out.println(clic);
-                    out.println(clic);
-                }
+                clic += boton.getX2() + "," + boton.getY2();
+                out.println(clic);
             }
         }
     }
