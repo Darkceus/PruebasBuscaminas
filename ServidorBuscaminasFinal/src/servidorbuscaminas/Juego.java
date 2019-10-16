@@ -213,11 +213,13 @@ public class Juego {
         if (sala.estaIniciado() && jugador.getEstado() == Jugador.ESTADO_JUGANDO) {
             Campo campo = TABLERO[x][y];
             if (campo.getEstado() == Campo.ESTADO_INICIAL && minasRes > 0) {
-                campo.setEstado(Campo.ESTADO_BANDERA);
-                campo.setAdmin(jugador);
-                jugador.agregarBandera(campo);
-                sala.enviarInfo("PONERBANDERA " + x + "," + y + "," + jugador.getID());
-                checarMinas();
+                if (checarClic(jugador, campo)) {
+                    campo.setEstado(Campo.ESTADO_BANDERA);
+                    campo.setAdmin(jugador);
+                    jugador.agregarBandera(campo);
+                    sala.enviarInfo("PONERBANDERA " + x + "," + y + "," + jugador.getID());
+                    checarMinas();
+                }
             } else if (campo.getEstado() == Campo.ESTADO_BANDERA && campo.getAdmin().equals(jugador)) {
                 campo.setEstado(Campo.ESTADO_INICIAL);
                 campo.setAdmin(jugador);
