@@ -48,7 +48,7 @@ public class ServidorBuscaminas {
             JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser iguales.");
             return false;
         }
-        if ((Juego.FILAS > 30 || Juego.FILAS < 3) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 3)) {
+        if ((Juego.FILAS > 30 || Juego.FILAS < 10) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 10)) {
             System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
             JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
             return false;
@@ -58,7 +58,7 @@ public class ServidorBuscaminas {
             JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser iguales.");
             return false;
         }
-        if ((Juego.TAM_ALTO > 20 || Juego.TAM_ALTO < 3) || (Juego.TAM_ANCHO > 20 || Juego.TAM_ANCHO < 3)) {
+        if ((Juego.TAM_ALTO > 20 || Juego.TAM_ALTO < 10) || (Juego.TAM_ANCHO > 20 || Juego.TAM_ANCHO < 10)) {
             System.out.println("El tamaño de los campos deben ser menores o iguales a 20 y mayores a 3.");
             JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser menores o iguales a 20 y mayores a 3.");
             return false;
@@ -170,15 +170,15 @@ public class ServidorBuscaminas {
                         } else if (input.startsWith("CLICIZQUIERDO ")) {
                             if (prueba2) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");
-                                if (coordenadas.length == 2) {
+                                if (coordenadas.length == 3) {
                                     sala.getJuego().descubrirCampo(jugador, convertirInt(coordenadas[0]), convertirInt(coordenadas[1]));
                                 }
                             }
                         } else if (input.startsWith("CLICDERECHO ")) {
                             if (prueba2) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");
-                                if (coordenadas.length == 2) {
-                                    sala.getJuego().gestionarBandera(jugador, convertirInt(coordenadas[0]), convertirInt(coordenadas[1]));
+                                if (coordenadas.length == 3) {
+                                    sala.getJuego().gestionarBandera(jugador, convertirInt(coordenadas[0]), convertirInt(coordenadas[1]), convertirInt(coordenadas[2]));
                                 }
                             }
                         } else {

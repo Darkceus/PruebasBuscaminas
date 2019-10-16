@@ -209,10 +209,10 @@ public class Juego {
         }
     }
     
-    public void gestionarBandera(Jugador jugador, int x, int y) {
+    public void gestionarBandera(Jugador jugador, int x, int y, int minasRes) {
         if (sala.estaIniciado() && jugador.getEstado() == Jugador.ESTADO_JUGANDO) {
             Campo campo = TABLERO[x][y];
-            if (campo.getEstado() == Campo.ESTADO_INICIAL) {
+            if (campo.getEstado() == Campo.ESTADO_INICIAL && minasRes > 0) {
                 campo.setEstado(Campo.ESTADO_BANDERA);
                 campo.setAdmin(jugador);
                 jugador.agregarBandera(campo);
