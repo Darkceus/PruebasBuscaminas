@@ -122,7 +122,7 @@ public class TableroJuego extends JPanel {
         if (numJugador == NUM_JUGADOR) {
             inicio = false;
             t.stop();
-            JOptionPane.showMessageDialog(this, "Jajaja perdiste xdxdxd");
+            JOptionPane.showMessageDialog(this, "Perdiste");
         }
     }
     
@@ -264,7 +264,7 @@ public class TableroJuego extends JPanel {
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     clic += "DERECHO ";
                 }
-                clic += boton.getX2() + "," + boton.getY2();
+                clic += boton.getX2() + "," + boton.getY2() + "," + minasRes;
                 out.println(clic);
             }
         }
