@@ -48,6 +48,13 @@ public class Jugador {
             campo.quitarAdmin();
             sala.enviarInfo("QUITARBANDERA " + campo.getX() + "," + campo.getY() + "," + this.getID());
         });
+        this.listaBanderas.clear();
+    }
+    
+    public void ponerBanderas(){
+        this.listaBanderas.forEach((campo) -> {
+            sala.enviarInfo("PONERBANDERA " + campo.getX() + "," + campo.getY() + "," + this.getID());
+        });
     }
 
     public void setSala(Sala sala) {

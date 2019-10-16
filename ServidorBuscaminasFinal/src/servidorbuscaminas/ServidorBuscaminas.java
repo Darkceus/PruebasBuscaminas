@@ -49,8 +49,8 @@ public class ServidorBuscaminas {
             return false;
         }
         if ((Juego.FILAS > 30 || Juego.FILAS < 10) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 10)) {
-            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
-            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
+            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 10.");
+            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 10.");
             return false;
         }
         if (Juego.TAM_ALTO != Juego.TAM_ANCHO) {
@@ -63,11 +63,11 @@ public class ServidorBuscaminas {
             JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser menores o iguales a 20 y mayores a 3.");
             return false;
         }
-        if ((Juego.FILAS < Juego.TAM_ANCHO) || (Juego.COLUMNAS < Juego.TAM_ALTO)) {
+        /*if ((Juego.FILAS < Juego.TAM_ANCHO) || (Juego.COLUMNAS < Juego.TAM_ALTO)) {
             System.out.println("El tamaño de las filas o columnas debe ser mayor o igual al tamaño de los campos.");
             JOptionPane.showMessageDialog(null, "El tamaño de las filas o columnas debe ser mayor o igual al tamaño de los campos.");
             return false;
-        }
+        }*/
         if (Juego.NUMERO_MINAS > (Juego.FILAS * Juego.COLUMNAS)) {
             System.out.println("El número de minas debe ser menor al tamaño total del tablero.");
             JOptionPane.showMessageDialog(null, "El número de minas debe ser menor al tamaño total del tablero.");
@@ -93,7 +93,7 @@ public class ServidorBuscaminas {
         }
     }
 
-    public static class Handler implements Runnable {
+    public class Handler implements Runnable {
 
         public Jugador jugador;
         public String nombre;
@@ -191,7 +191,9 @@ public class ServidorBuscaminas {
             } finally {
                 if (Escritor != null || sala != null || jugador != null) {
                     if (!prueba) {
-                        jugador.quitarBanderas();
+                        if (sala.estaIniciado()) {
+                            jugador.quitarBanderas();
+                        }
                         sala.eliminarJugador(jugador);
                         if (sala.getTam() == 1 && sala.estaIniciado()) {
                             sala.enviarInfo("INFOMESSAGE Eres el único que queda, el juego va a terminar");
@@ -202,6 +204,9 @@ public class ServidorBuscaminas {
                             Jugador j = sala.getPrimerJugador();
                             if (j != sala.getAdmin()) {
                                 sala.setAdmin(j);
+                                if (sala.estaIniciado()) {
+                                    sala.actualizarDatos();
+                                }
                             }
                         } else {
                             SALAS.remove(sala.getID());

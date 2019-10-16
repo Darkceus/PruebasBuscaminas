@@ -14,7 +14,7 @@ public class Juego {
     public static final int COLUMNAS = 30;
     public static final int TAM_ALTO = 20;
     public static final int TAM_ANCHO = 20;
-    public static final int NUMERO_MINAS = 200;
+    public static final int NUMERO_MINAS = 10;
     private final Campo[][] TABLERO;
     private final ArrayList<Campo> listaMinas;
     private boolean inicio;
@@ -150,14 +150,59 @@ public class Juego {
         return false;
     }
     
+    private boolean checar(Jugador jugador) {
+        int tam;
+        switch (jugador.getID()) {
+            case 1: {
+                tam = COLUMNAS;
+                for (int i = 0; i < tam; i++) {
+                    if (TABLERO[0][i].getEstado() == Campo.ESTADO_INICIAL) {
+                        return true;
+                    }
+                }
+                break;
+            }
+            case 2: {
+                tam = COLUMNAS;
+                int info = (Juego.FILAS - 1);
+                for (int i = 0; i < tam; i++) {
+                    if (TABLERO[info][i].getEstado() == Campo.ESTADO_INICIAL) {
+                        return true;
+                    }
+                }
+                break;
+            }
+            case 3: {
+                tam = FILAS;
+                for (int i = 0; i < tam; i++) {
+                    if (TABLERO[i][0].getEstado() == Campo.ESTADO_INICIAL) {
+                        return true;
+                    }
+                }
+                break;
+            }
+            case 4: {
+                tam = FILAS;
+                int info = (Juego.COLUMNAS - 1);
+                for (int i = 0; i < tam; i++) {
+                    if (TABLERO[i][info].getEstado() == Campo.ESTADO_INICIAL) {
+                        return true;
+                    }
+                }
+                break;
+            }
+        }
+        return false;
+    }
+    
     private boolean checarEsquina(Jugador jugador, Campo campo) {
-        if (jugador.getID() == 1 && campo.getX() == 0) {
+        if (jugador.getID() == 1 && (campo.getX() == 0 || !checar(jugador))) {
             return true;
-        } else if (jugador.getID() == 2 && campo.getX() == (Juego.FILAS - 1)) {
+        } else if (jugador.getID() == 2 && (campo.getX() == (Juego.FILAS - 1) || !checar(jugador))) {
             return true;
-        } else if (jugador.getID() == 3 && campo.getY() == 0) {
+        } else if (jugador.getID() == 3 && (campo.getY() == 0 || !checar(jugador))) {
             return true;
-        } else if (jugador.getID() == 4 && campo.getY() == (Juego.COLUMNAS - 1)) {
+        } else if (jugador.getID() == 4 && (campo.getY() == (Juego.COLUMNAS - 1) || !checar(jugador))) {
             return true;
         }
         return false;
@@ -167,7 +212,7 @@ public class Juego {
         if (sala.estaIniciado() && jugador.getEstado() == Jugador.ESTADO_JUGANDO) {
             Campo campo = TABLERO[x][y];
             if (checarClic(jugador, campo)) {
-                if (campo.getEstado() == Campo.ESTADO_INICIAL || (!campo.getAdmin().equals(jugador) && campo.getEstado() == Campo.ESTADO_BANDERA)) {
+                if (campo.getEstado() == Campo.ESTADO_INICIAL/* || (!campo.getAdmin().equals(jugador) && campo.getEstado() == Campo.ESTADO_BANDERA)*/) {
                     campo.setEstado(Campo.ESTADO_APLASTADO);
                     campo.setAdmin(jugador);
                     sala.enviarInfo("DESCUBRIRCAMPO " + x + "," + y + "," + campo.getValor());

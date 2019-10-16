@@ -36,6 +36,12 @@ public class Sala {
             this.juego.mostrarPuntos();
         }
     }
+    
+    public void actualizarBanderas() {
+        this.listaJugadores.forEach((jugador) -> {
+            jugador.ponerBanderas();
+        });
+    }
 
     public Juego getJuego() {
         return this.juego;
@@ -97,6 +103,13 @@ public class Sala {
             jugador.getPW().println("DATOS " + Juego.FILAS + "," + Juego.COLUMNAS + "," + Juego.TAM_ALTO + "," + Juego.TAM_ANCHO
                     + ","  + Juego.NUMERO_MINAS + "," + jugador.getID() + "," + this.getAdmin().getID());
         });
+    }
+    
+    public void actualizarDatos(){
+        for (Jugador jugador : this.listaJugadores) {
+            jugador.getPW().println("ACTUALIZAR " + jugador.getID() + "," + this.getAdmin().getID() + "," + this.listaPerdedores.contains(jugador));
+            jugador.ponerBanderas();
+        }
     }
 
     public int getTam() {
