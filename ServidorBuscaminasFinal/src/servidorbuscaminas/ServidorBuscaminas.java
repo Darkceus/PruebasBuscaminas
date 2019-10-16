@@ -27,16 +27,53 @@ public class ServidorBuscaminas {
     }
     
     private void iniciarServidor() {
+        if (!validaciones()) {
+            System.exit(0);
+        }
         validarPuerto(getPuerto());
         System.out.println("El Servidor de Buscaminas está en línea...");
         ExecutorService pool = Executors.newFixedThreadPool(500);
-        try (ServerSocket listener = new ServerSocket(59001)) {
+        try (ServerSocket listener = new ServerSocket(this.puerto)) {
             while (true) {
                 pool.execute(new Handler(listener.accept()));
             }
         } catch (IOException e) {
             System.out.println("Error al Abrir el Servidor");
         }
+    }
+    
+    private boolean validaciones(){
+        if (Juego.FILAS != Juego.COLUMNAS) {
+            System.out.println("El número de Filas y Columnas deben ser iguales.");
+            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser iguales.");
+            return false;
+        }
+        if ((Juego.FILAS > 30 || Juego.FILAS < 3) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 3)) {
+            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
+            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 3.");
+            return false;
+        }
+        if (Juego.TAM_ALTO != Juego.TAM_ANCHO) {
+            System.out.println("El tamaño de los campos deben ser iguales.");
+            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser iguales.");
+            return false;
+        }
+        if ((Juego.TAM_ALTO > 20 || Juego.TAM_ALTO < 3) || (Juego.TAM_ANCHO > 20 || Juego.TAM_ANCHO < 3)) {
+            System.out.println("El tamaño de los campos deben ser menores o iguales a 20 y mayores a 3.");
+            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser menores o iguales a 20 y mayores a 3.");
+            return false;
+        }
+        if ((Juego.FILAS < Juego.TAM_ANCHO) || (Juego.COLUMNAS < Juego.TAM_ALTO)) {
+            System.out.println("El tamaño de las filas o columnas debe ser mayor o igual al tamaño de los campos.");
+            JOptionPane.showMessageDialog(null, "El tamaño de las filas o columnas debe ser mayor o igual al tamaño de los campos.");
+            return false;
+        }
+        if (Juego.NUMERO_MINAS > (Juego.FILAS * Juego.COLUMNAS)) {
+            System.out.println("El número de minas debe ser menor al tamaño total del tablero.");
+            JOptionPane.showMessageDialog(null, "El número de minas debe ser menor al tamaño total del tablero.");
+            return false;
+        }
+        return true;
     }
     
     private String getPuerto() {
@@ -127,22 +164,18 @@ public class ServidorBuscaminas {
                     try {input = Entrada.nextLine();} catch (Exception e) {return;}
                     if (input != null && !input.equals("") && !input.isEmpty()) {
                         int espacio = input.indexOf(' ');
-                        boolean prueba = espacio >= 0 && espacio < input.length();
+                        boolean prueba2 = espacio >= 0 && espacio < input.length();
                         if (input.toLowerCase().startsWith("/iniciarjuego")) {
-                            if (sala.getJuego().validaciones()) {
-                                sala.iniciarJuego(jugador);
-                            } else {
-                                sala.enviarInfo("MESSAGE [Servidor] Los datos en el servidor son erróneos.");
-                            }
+                            sala.iniciarJuego(jugador);
                         } else if (input.startsWith("CLICIZQUIERDO ")) {
-                            if (prueba) {
+                            if (prueba2) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");
                                 if (coordenadas.length == 2) {
                                     sala.getJuego().descubrirCampo(jugador, convertirInt(coordenadas[0]), convertirInt(coordenadas[1]));
                                 }
                             }
                         } else if (input.startsWith("CLICDERECHO ")) {
-                            if (prueba) {
+                            if (prueba2) {
                                 String[] coordenadas = input.substring(espacio + 1).split(",");
                                 if (coordenadas.length == 2) {
                                     sala.getJuego().gestionarBandera(jugador, convertirInt(coordenadas[0]), convertirInt(coordenadas[1]));
@@ -178,6 +211,7 @@ public class ServidorBuscaminas {
                 try {
                     socket.close();
                 } catch (IOException e) {
+                    System.out.println("Error al cerrar el Socket, " + e);
                 }
             }
         }

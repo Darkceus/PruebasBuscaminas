@@ -45,10 +45,6 @@ public class Campo {
     public void setValor(int Valor) {
         this.Valor = Valor;
     }
-    
-    public void aumentarValor() {
-        this.Valor++;
-    }
 
     public int getEstado() {
         return Estado;

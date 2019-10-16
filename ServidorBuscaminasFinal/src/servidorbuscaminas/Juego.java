@@ -20,7 +20,10 @@ public class Juego {
     private boolean inicio;
     private final int[] NUM_X = {-1, 0, 1, -1, 1, -1, 0, 1};
     private final int[] NUM_Y = {-1, -1, -1, 0, 0, 1, 1, 1};
+    private final int[] CRUZ_X = {0, -1, 1, 0};
+    private final int[] CRUZ_Y = {-1, 0, 0, 1};
     private final Sala sala;
+    private boolean control;
     
     public Juego() {
         this.TABLERO = null;
@@ -29,7 +32,6 @@ public class Juego {
     }
 
     public Juego(Sala sala) {
-        //validaciones();
         this.sala = sala;
         this.TABLERO = new Campo[FILAS][COLUMNAS];
         listaMinas = new ArrayList<>();
@@ -37,35 +39,7 @@ public class Juego {
         colocarMinas();
         checarPerimetro();
         imprimirInfo();
-    }
-    
-    public boolean validaciones(){
-        if (Juego.FILAS != Juego.COLUMNAS) {
-            System.out.println("El número de Filas y Columnas deben ser iguales.");
-            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser iguales.");
-            return false;
-        }
-        if ((Juego.FILAS > 30 || Juego.FILAS < 0) || (Juego.COLUMNAS > 30 || Juego.COLUMNAS < 0)) {
-            System.out.println("El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 0.");
-            JOptionPane.showMessageDialog(null, "El número de Filas y Columnas deben ser menores o iguales a 30 y mayores a 0.");
-            return false;
-        }
-        if (Juego.TAM_ALTO != Juego.TAM_ANCHO) {
-            System.out.println("El tamaño de los campos deben ser iguales.");
-            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser iguales.");
-            return false;
-        }
-        if ((Juego.TAM_ALTO > 20 || Juego.TAM_ALTO < 0) || (Juego.TAM_ANCHO > 20 || Juego.TAM_ANCHO < 0)) {
-            System.out.println("El tamaño de los campos deben ser menores o iguales a 20 y mayores a 0.");
-            JOptionPane.showMessageDialog(null, "El tamaño de los campos deben ser menores o iguales a 20 y mayores a 0.");
-            return false;
-        }
-        if (Juego.NUMERO_MINAS > (Juego.FILAS * Juego.COLUMNAS)) {
-            System.out.println("El número de minas debe ser menor al tamaño total del tablero.");
-            JOptionPane.showMessageDialog(null, "El número de minas debe ser menor al tamaño total del tablero.");
-            return false;
-        }
-        return true;
+        control = true;
     }
 
     public void setInicio(boolean inicio) {
@@ -148,7 +122,7 @@ public class Juego {
                 if ((x2 > NUM_X[0] && x2 < Juego.FILAS) && (y2 > NUM_Y[0] && y2 < Juego.COLUMNAS)) {
                     campo = TABLERO[x2][y2];
                     if (campo.getValor() != Campo.VALOR_MINA) {
-                        campo.aumentarValor();
+                        campo.setValor(campo.getValor() + 1);
                     }
                 }
             }
@@ -206,7 +180,6 @@ public class Juego {
                     } else if (campo.getValor() == Campo.VALOR_VACIO) {
                         revelarPerimetro(jugador, campo);
                     }
-                    
                 }
                 checarMinas();
             }
@@ -263,14 +236,14 @@ public class Juego {
         for (int y = 0; y < COLUMNAS; y++) {
             for (int x = 0; x < FILAS; x++) {
                 campo = TABLERO[x][y];
-                if (campo.getEstado() == Campo.ESTADO_BANDERA && campo.getValor() == Campo.VALOR_MINA) {
+                if ((campo.getEstado() == Campo.ESTADO_BANDERA && campo.getValor() == Campo.VALOR_MINA) || (campo.getEstado() == Campo.ESTADO_APLASTADO && campo.getValor() == Campo.VALOR_MINA)) {
                     checar++;
                 } else if (campo.getEstado() == Campo.ESTADO_APLASTADO) {
                     checar2++;
                 }
             }
         }
-        if (checar == NUMERO_MINAS && checar2 == ((FILAS * COLUMNAS) - NUMERO_MINAS)) {
+        if (control && checar == NUMERO_MINAS && checar2 == ((FILAS * COLUMNAS) - NUMERO_MINAS)) {
             sala.enviarInfo("INFOMESSAGE Han puesto banderas sobre todas las minas y descubierto los campos.");
             this.mostrarPuntos();
         }
@@ -307,7 +280,8 @@ public class Juego {
                     }
                 }
             }
-        } 
+        }
+        control = false;
     }
 
     public void mostrarPuntos() {
