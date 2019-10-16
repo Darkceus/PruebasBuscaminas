@@ -26,7 +26,7 @@ public class PrincipalClienteJugador extends JFrame {
     Scanner in;
     PrintWriter out;
     private TableroJuego juego;
-    JFrame frame = new JFrame("Chatter");
+    JFrame frame = new JFrame("Chat");
     JTextField textField = new JTextField(50);
     JTextArea messageArea = new JTextArea(16, 50);
     private final JLabel tiempo;
@@ -177,20 +177,12 @@ public class PrincipalClienteJugador extends JFrame {
                     } else {
                         getMensaje("Error al recibir datos");
                     }
-                } else if (linea.startsWith("GANAR")) {
-                    
                 } else if (linea.startsWith("MESSAGE ")) {
                     messageArea.append(linea.substring(8) + "\n");
                 }
             }
         } finally {
             System.exit(0);
-            /*juego.setVisible(false);
-            juego.cerrarJuego();
-            frame.setVisible(false);
-            frame.dispose();
-            setVisible(false);
-            dispose();*/
         }
     }
     
