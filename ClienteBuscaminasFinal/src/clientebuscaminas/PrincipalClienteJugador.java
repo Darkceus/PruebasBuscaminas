@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.JFrame;
@@ -31,6 +32,7 @@ public class PrincipalClienteJugador extends JFrame {
     JTextArea messageArea = new JTextArea(16, 50);
     private final JLabel tiempo;
     private final JLabel texto;
+    private ArrayList<Integer> numerosJugadores;
 
     public PrincipalClienteJugador() {
         validarDireccion(getDireccion());
@@ -106,6 +108,14 @@ public class PrincipalClienteJugador extends JFrame {
                         juego.quitarBandera(convertirInt(tam[0]), convertirInt(tam[1]), convertirInt(tam[2]));
                     } else {
                         getMensaje("Error al quitar bandera");
+                    }
+                } else if (linea.startsWith("ACTUALIZAR ")) {
+                    tam = linea.substring(11).split(",");
+                    if (tam.length == 3) {
+                        System.out.println(Arrays.toString(tam));
+                        juego.actualizarDatos(convertirInt(tam[0]), convertirInt(tam[1]), convertirBol(tam[2]));
+                    } else {
+                        getMensaje2("Error al actualizar datos");
                     }
                 } else if (linea.startsWith("DATOS ")) {
                     tam = linea.substring(6).split(",");
@@ -190,6 +200,17 @@ public class PrincipalClienteJugador extends JFrame {
         int num2 = -1;
         try {
             num2 = Integer.parseInt(num);
+        } catch (NumberFormatException e) {
+            System.err.println("Debes de poner datos válidos");
+            System.exit(0);
+        }
+        return num2;
+    }
+    
+    private boolean convertirBol(String num) {
+        boolean num2 = false;
+        try {
+            num2 = Boolean.parseBoolean(num);
         } catch (NumberFormatException e) {
             System.err.println("Debes de poner datos válidos");
             System.exit(0);

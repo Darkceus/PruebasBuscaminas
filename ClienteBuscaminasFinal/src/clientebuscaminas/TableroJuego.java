@@ -7,6 +7,9 @@ package clientebuscaminas;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.*;
 
 public class TableroJuego extends JPanel {
@@ -46,10 +49,11 @@ public class TableroJuego extends JPanel {
     private final JLabel tiempo;
     //private final JButton comenzarJuego;
     private boolean inicio;
-    private final int NUM_JUGADOR;
+    private int NUM_JUGADOR;
     //private final boolean imagenes;
     private final PrintWriter out;
-    private final int ADMIN;
+    private Map<Integer, Boton> mapaBanderas;
+    private int ADMIN;
     
     public TableroJuego() {
         this.texto = null;
@@ -67,6 +71,7 @@ public class TableroJuego extends JPanel {
     }
 
     public TableroJuego(JLabel texto, JLabel tiempo, PrintWriter out, int filas, int columnas, int AltoCampo, int AnchoCampo, int NumMinas, int NumJugador, int NumAdmin) {
+        this.mapaBanderas = new TreeMap<>();
         this.FILAS = filas;
         this.COLUMNAS = columnas;
         this.TAM_ALTO = AltoCampo;
@@ -97,18 +102,30 @@ public class TableroJuego extends JPanel {
     
     public void ponerBandera(int x, int y, int numJugador) {
         BOTONES[x][y].setIcon(obtenerIcono(numJugador));
-        /*BOTONES[x][y].setBackground(obtenerColor(numJugador));
-        BOTONES[x][y].setText(TEXTO_BANDERA);*/
         if (numJugador == NUM_JUGADOR) {
             minasRes--;
             texto.setText("Banderas Restantes: " + minasRes);
         }
     }
     
+    public void actualizarDatos(int numJugador, int numAdmin, boolean perdio){
+        if (this.NUM_JUGADOR != numJugador) {
+            this.NUM_JUGADOR = numJugador;
+        }
+        if (perdio && inicio) {
+            this.inicio = false;
+            t.stop();
+        } else if(!perdio && !inicio){
+            this.inicio = true;
+            t.start();
+        }
+        if (this.ADMIN != numAdmin) {
+            this.ADMIN = numAdmin;
+        }
+    }
+    
     public void quitarBandera(int x, int y, int numJugador){
         BOTONES[x][y].setIcon(IMAGENES[BASE_2]);
-        /*BOTONES[x][y].setBackground(NO_COLOR);
-        BOTONES[x][y].setText(null);*/
         if (numJugador == NUM_JUGADOR) {
             minasRes++;
             texto.setText("Banderas Restantes: " + minasRes);
@@ -117,9 +134,8 @@ public class TableroJuego extends JPanel {
     
     public void hayMina(int x, int y, int numJugador){
         BOTONES[x][y].setIcon(IMAGENES[MINA]);
-        /*BOTONES[x][y].setBackground(COLOR_MINA);
-        BOTONES[x][y].setText(TEXTO_MINA);*/
         if (numJugador == NUM_JUGADOR) {
+            mapaBanderas.remove(numJugador);
             inicio = false;
             t.stop();
             JOptionPane.showMessageDialog(this, "Perdiste");
@@ -128,45 +144,19 @@ public class TableroJuego extends JPanel {
     
     public void noMina(int x, int y){
         BOTONES[x][y].setIcon(IMAGENES[NO_MINA]);
-        /*BOTONES[x][y].setBackground(COLOR_MINA);
-        BOTONES[x][y].setText(TEXTO_MINA);*/
     }
     
     public void hayMina2(int x, int y){
         BOTONES[x][y].setIcon(IMAGENES[MINA]);
-        /*BOTONES[x][y].setBackground(COLOR_MINA);
-        BOTONES[x][y].setText(TEXTO_MINA);*/
     }
     
     public void descubrirCampo(int x, int y, int valorCampo){
-        /*BOTONES[x][y].setBackground(COLOR_APLASTADO);
-        if (valorCampo > 0) {
-            BOTONES[x][y].setText("" + valorCampo);
-        }*/
         BOTONES[x][y].setIcon(IMAGENES[valorCampo]);
     }
     
     public void descubrirCampo2(int x, int y){
-        /*BOTONES[x][y].setBackground(COLOR_APLASTADO);
-        if (valorCampo > 0) {
-            BOTONES[x][y].setText("" + valorCampo);
-        }*/
         BOTONES[x][y].setIcon(IMAGENES[BASE_1]);
     }
-    
-    /*private Color obtenerColor(int valor){
-        switch (valor) {
-            case 1:
-                return COLOR_J1;
-            case 2:
-                return COLOR_J2;
-            case 3:
-                return COLOR_J3;
-            case 4:
-                return COLOR_J4;
-        }
-        return null;
-    }*/
     
     private Icon obtenerIcono(int valor){
         switch (valor) {
